@@ -429,7 +429,7 @@
 
 /* Defined, this macro disables CDC ACM non-blocking transmission support. */
 
-#define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
+/* #define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
 
 /* defined, this macro enables device audio feedback endpoint support.  */
 
@@ -441,7 +441,7 @@
 
 /* Defined, class _write is pending ZLP automatically (complete transfer) after buffer is sent.  */
 
-#define UX_DEVICE_CLASS_CDC_ACM_WRITE_AUTO_ZLP
+/* #define UX_DEVICE_CLASS_CDC_ACM_WRITE_AUTO_ZLP  */
 
 /* #define UX_DEVICE_CLASS_PRINTER_WRITE_AUTO_ZLP  */
 

@@ -28,7 +28,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "ux_api.h"
 #include "ux_stm32_config.h"
-#include "ux_device_class_cdc_acm.h"
 #include "ux_device_class_video.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -42,7 +41,6 @@ extern "C" {
 #define USBD_MAX_CLASS_ENDPOINTS                       9U
 #define USBD_MAX_CLASS_INTERFACES                      12U
 
-#define USBD_CDC_ACM_CLASS_ACTIVATED                   1U
 #define USBD_VIDEO_CLASS_ACTIVATED                     1U
 
 #define USBD_CONFIG_MAXPOWER                           25U
@@ -208,47 +206,6 @@ typedef struct
   uint8_t bReserved;
 } __PACKED USBD_DevQualiDescTypedef;
 
-#if (USBD_CDC_ACM_CLASS_ACTIVATED == 1) || (USBD_RNDIS_CLASS_ACTIVATED == 1) || (USBD_CDC_ECM_CLASS_ACTIVATED == 1)
-typedef struct
-{
-  /* Header Functional Descriptor*/
-  uint8_t bLength;
-  uint8_t bDescriptorType;
-  uint8_t bDescriptorSubtype;
-  uint16_t bcdCDC;
-} __PACKED USBD_CDCHeaderFuncDescTypedef;
-
-typedef struct
-{
-  /* Call Management Functional Descriptor*/
-  uint8_t bLength;
-  uint8_t bDescriptorType;
-  uint8_t bDescriptorSubtype;
-  uint8_t bmCapabilities;
-  uint8_t bDataInterface;
-} __PACKED USBD_CDCCallMgmFuncDescTypedef;
-
-typedef struct
-{
-  /* ACM Functional Descriptor*/
-  uint8_t bLength;
-  uint8_t bDescriptorType;
-  uint8_t bDescriptorSubtype;
-  uint8_t bmCapabilities;
-} __PACKED USBD_CDCACMFuncDescTypedef;
-
-typedef struct
-{
-  /* Union Functional Descriptor*/
-  uint8_t bLength;
-  uint8_t bDescriptorType;
-  uint8_t bDescriptorSubtype;
-  uint8_t bMasterInterface;
-  uint8_t bSlaveInterface;
-} __PACKED USBD_CDCUnionFuncDescTypedef;
-
-#endif /* (USBD_CDC_ACM_CLASS_ACTIVATED == 1) || (USBD_RNDIS_CLASS_ACTIVATED == 1)  || (USBD_CDC_ECM_CLASS_ACTIVATED == 1)*/
-
 #if USBD_VIDEO_CLASS_ACTIVATED == 1
 
 /* Video Control Interface Descriptor (Interface Header) */
@@ -395,19 +352,6 @@ uint16_t USBD_Get_Configuration_Number(uint8_t class_type, uint8_t interface_typ
 #define USBD_DEVICE_QUALIFIER_DESC_SIZE               0x0AU
 
 #define USBD_STRING_FRAMEWORK_MAX_LENGTH              256U
-
-/* Device CDC-ACM Class */
-#define USBD_CDCACM_EPINCMD_ADDR                      0x83U
-#define USBD_CDCACM_EPINCMD_FS_MPS                    8U
-#define USBD_CDCACM_EPINCMD_HS_MPS                    8U
-#define USBD_CDCACM_EPIN_ADDR                         0x82U
-#define USBD_CDCACM_EPOUT_ADDR                        0x01U
-#define USBD_CDCACM_EPIN_FS_MPS                       64U
-#define USBD_CDCACM_EPIN_HS_MPS                       512U
-#define USBD_CDCACM_EPOUT_FS_MPS                      64U
-#define USBD_CDCACM_EPOUT_HS_MPS                      512U
-#define USBD_CDCACM_EPINCMD_FS_BINTERVAL              5U
-#define USBD_CDCACM_EPINCMD_HS_BINTERVAL              5U
 
 /* Device VIDEO Class */
 #define USBD_VIDEO_EPIN_ADDR                          0x81U

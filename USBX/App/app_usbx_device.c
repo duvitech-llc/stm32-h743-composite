@@ -43,18 +43,13 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-static ULONG cdc_acm_interface_number;
-static ULONG cdc_acm_configuration_number;
 static ULONG video_interface_number;
 static ULONG video_configuration_number;
-static UX_SLAVE_CLASS_CDC_ACM_PARAMETER cdc_acm_parameter;
 static UX_DEVICE_CLASS_VIDEO_PARAMETER video_parameter;
 static UX_DEVICE_CLASS_VIDEO_STREAM_PARAMETER video_stream_parameter[USBD_VIDEO_STREAM_NMNBER];
 static TX_THREAD ux_device_app_thread;
 
 /* USER CODE BEGIN PV */
-static TX_THREAD ux_cdc_acm_read_thread;
-static TX_THREAD ux_cdc_acm_write_thread;
 
 /* USER CODE END PV */
 
@@ -134,33 +129,6 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
     /* USER CODE END USBX_DEVICE_INITIALIZE_ERROR */
   }
 
-  /* Initialize the cdc acm class parameters for the device */
-  cdc_acm_parameter.ux_slave_class_cdc_acm_instance_activate   = USBD_CDC_ACM_Activate;
-  cdc_acm_parameter.ux_slave_class_cdc_acm_instance_deactivate = USBD_CDC_ACM_Deactivate;
-  cdc_acm_parameter.ux_slave_class_cdc_acm_parameter_change    = USBD_CDC_ACM_ParameterChange;
-
-  /* USER CODE BEGIN CDC_ACM_PARAMETER */
-
-  /* USER CODE END CDC_ACM_PARAMETER */
-
-  /* Get cdc acm configuration number */
-  cdc_acm_configuration_number = USBD_Get_Configuration_Number(CLASS_TYPE_CDC_ACM, 0);
-
-  /* Find cdc acm interface number */
-  cdc_acm_interface_number = USBD_Get_Interface_Number(CLASS_TYPE_CDC_ACM, 0);
-
-  /* Initialize the device cdc acm class */
-  if (ux_device_stack_class_register(_ux_system_slave_class_cdc_acm_name,
-                                     ux_device_class_cdc_acm_entry,
-                                     cdc_acm_configuration_number,
-                                     cdc_acm_interface_number,
-                                     &cdc_acm_parameter) != UX_SUCCESS)
-  {
-    /* USER CODE BEGIN USBX_DEVICE_CDC_ACM_REGISTER_ERROR */
-    return UX_ERROR;
-    /* USER CODE END USBX_DEVICE_CDC_ACM_REGISTER_ERROR */
-  }
-
   /* Initialize the video class parameters for the device */
   video_stream_parameter[0].ux_device_class_video_stream_parameter_callbacks.ux_device_class_video_stream_change
     = USBD_VIDEO_StreamChange;
@@ -233,26 +201,7 @@ UINT MX_USBX_Device_Init(VOID *memory_ptr)
   }
 
   /* USER CODE BEGIN MX_USBX_Device_Init1 */
-	if(tx_byte_allocate(byte_pool, (VOID **)&pointer, 1024, TX_NO_WAIT) != TX_SUCCESS)
-	{
-			  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-			  return TX_POOL_ERROR;
-	}
-	if(tx_thread_create(&ux_cdc_acm_read_thread, "CDC Read Thread", usbx_cdc_read_thread_entry, 1, pointer, 1024, 20, 20, 1, TX_AUTO_START) != TX_SUCCESS)
-	{
-			  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-			  return TX_THREAD_ERROR;
-	}
-	if(tx_byte_allocate(byte_pool, (VOID **)&pointer, 1024, TX_NO_WAIT) != TX_SUCCESS)
-	{
-			  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-			  return TX_POOL_ERROR;
-	}
-	if(tx_thread_create(&ux_cdc_acm_write_thread, "CDC Write Thread", usbx_cdc_write_thread_entry, 1, pointer, 1024, 20, 20, 1, TX_AUTO_START) != TX_SUCCESS)
-	{
-			  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-			  return TX_THREAD_ERROR;
-}
+
   /* USER CODE END MX_USBX_Device_Init1 */
 
   return ret;
