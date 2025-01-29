@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.dpf": "yaml",
+        "app_usbx_device.h": "c"
+    }
+}
